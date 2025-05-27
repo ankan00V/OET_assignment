@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OET Connector Solutions</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .question-card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 40px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .question-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4);
+        }
+        
+        .question-number {
+            display: inline-block;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-weight: bold;
+            font-size: 1.2em;
+            margin-bottom: 20px;
+        }
+        
+        .statements {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        
+        .statement {
+            flex: 1;
+            min-width: 300px;
+            background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+            padding: 20px;
+            border-radius: 15px;
+            border-left: 5px solid #2196f3;
+            position: relative;
+        }
+        
+        .statement h3 {
+            color: #1976d2;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+        
+        .statement p {
+            color: #333;
+            line-height: 1.6;
+            font-size: 1.1em;
+        }
+        
+        .connector-wheel {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 40px 0;
+            position: relative;
+            min-height: 300px;
+        }
+        
+        .center-circle {
+            width: 150px;
+            height: 150px;
+            background: linear-gradient(45deg, #333, #666);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            text-align: center;
+            font-size: 1.1em;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            z-index: 10;
+            position: relative;
+        }
+        
+        .connector-option {
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .connector-option:hover {
+            transform: scale(1.1);
+        }
+        
+        .option-a { background: #ff6b6b; top: 0; left: 50%; transform: translateX(-50%); }
+        .option-b { background: #4ecdc4; top: 50%; right: 0; transform: translateY(-50%); }
+        .option-c { background: #45b7d1; bottom: 0; right: 25%; }
+        .option-d { background: #96ceb4; bottom: 0; left: 25%; }
+        .option-e { background: #feca57; top: 50%; left: 0; transform: translateY(-50%); }
+        
+        .correct-answer {
+            background: linear-gradient(45deg, #4caf50, #8bc34a) !important;
+            animation: pulse 2s infinite;
+            border: 3px solid #2e7d32;
+        }
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(76, 175, 80, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(76, 175, 80, 0); }
+        }
+        
+        .analysis {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            padding: 25px;
+            border-radius: 15px;
+            margin: 30px 0;
+            border-left: 5px solid #28a745;
+        }
+        
+        .analysis h3 {
+            color: #155724;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+        
+        .relationship-diagram {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+        
+        .cause-box, .effect-box {
+            padding: 20px;
+            border-radius: 15px;
+            color: white;
+            text-align: center;
+            font-weight: bold;
+            min-width: 200px;
+            position: relative;
+        }
+        
+        .cause-box {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a52);
+        }
+        
+        .effect-box {
+            background: linear-gradient(45deg, #4ecdc4, #44a08d);
+        }
+        
+        .arrow {
+            font-size: 2em;
+            color: #333;
+            animation: bounce 2s infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateX(0); }
+            40% { transform: translateX(-10px); }
+            60% { transform: translateX(-5px); }
+        }
+        
+        .memory-aid {
+            background: linear-gradient(135deg, #fff3e0, #ffe0b2);
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+            border-left: 5px solid #ff9800;
+        }
+        
+        .memory-aid h4 {
+            color: #e65100;
+            margin-bottom: 10px;
+            font-size: 1.2em;
+        }
+        
+        .final-answer {
+            background: linear-gradient(45deg, #4caf50, #8bc34a);
+            color: white;
+            text-align: center;
+            padding: 20px;
+            border-radius: 15px;
+            font-size: 1.3em;
+            font-weight: bold;
+            margin-top: 30px;
+            box-shadow: 0 10px 30px rgba(76, 175, 80, 0.3);
+        }
+        
+        .visual-flow {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin: 30px 0;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        
+        .flow-step {
+            flex: 1;
+            min-width: 150px;
+            text-align: center;
+            padding: 20px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            position: relative;
+        }
+        
+        .flow-step::after {
+            content: '→';
+            position: absolute;
+            right: -15px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.5em;
+            color: #666;
+        }
+        
+        .flow-step:last-child::after {
+            display: none;
+        }
+        
+        .emoji {
+            font-size: 2em;
+            margin-bottom: 10px;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎯 OET Connector Challenge</h1>
+            <p>Visual Solutions with Creative Learning</p>
+        </div>
+        
+        <!-- Question 1 -->
+        <div class="question-card">
+            <div class="question-number">Question 1</div>
+            
+            <div class="statements">
+                <div class="statement">
+                    <h3>📝 Statement 1</h3>
+                    <p>The insult was very hurtful.</p>
+                </div>
+                <div class="statement">
+                    <h3>📝 Statement 2</h3>
+                    <p>It concerned not himself but another, his daughter, whom he loved more than himself.</p>
+                </div>
+            </div>
+            
+            <div class="connector-wheel">
+                <div class="center-circle">
+                    Which connector links these statements?
+                </div>
+                <div class="connector-option option-a">While</div>
+                <div class="connector-option option-b">But</div>
+                <div class="connector-option option-c correct-answer">Because</div>
+                <div class="connector-option option-d">Yet</div>
+                <div class="connector-option option-e">Whereas</div>
+            </div>
+            
+            <div class="analysis">
+                <h3>🔍 Analysis: Cause & Effect Relationship</h3>
+                
+                <div class="relationship-diagram">
+                    <div class="cause-box">
+                        <span class="emoji">🎯</span>
+                        <strong>CAUSE</strong><br>
+                        Insult targeted his beloved daughter
+                    </div>
+                    <div class="arrow">➡️</div>
+                    <div class="effect-box">
+                        <span class="emoji">💔</span>
+                        <strong>EFFECT</strong><br>
+                        The insult was very hurtful
+                    </div>
+                </div>
+                
+                <p><strong>Why "BECAUSE"?</strong> Statement 2 explains WHY the insult was so hurtful. It wasn't just any insult - it was painful because it targeted someone he loved more than himself.</p>
+            </div>
+            
+            <div class="memory-aid">
+                <h4>🧠 Memory Trick: "B.E.C.A.U.S.E"</h4>
+                <p><strong>B</strong>uilds <strong>E</strong>xplanations, <strong>C</strong>onnects <strong>A</strong>nswers, <strong>U</strong>ncovers <strong>S</strong>ources, <strong>E</strong>xplains</p>
+                <p>Remember: <em>BECAUSE = Reason/Cause behind the statement</em></p>
+            </div>
+            
+            <div class="final-answer">
+                ✅ ANSWER: C) Because
+            </div>
+        </div>
+        
+        <!-- Question 2 -->
+        <div class="question-card">
+            <div class="question-number">Question 2</div>
+            
+            <div class="statements">
+                <div class="statement">
+                    <h3>📝 Statement 1</h3>
+                    <p>The roads were flooded due to heavy rain.</p>
+                </div>
+                <div class="statement">
+                    <h3>📝 Statement 2</h3>
+                    <p>The schools were closed for the day.</p>
+                </div>
+            </div>
+            
+            <div class="connector-wheel">
+                <div class="center-circle">
+                    Which connector shows the logical flow?
+                </div>
+                <div class="connector-option option-a">But</div>
+                <div class="connector-option option-b">Because</div>
+                <div class="connector-option option-c">While</div>
+                <div class="connector-option option-d correct-answer">Therefore</div>
+                <div class="connector-option option-e">Whereas</div>
+            </div>
+            
+            <div class="analysis">
+                <h3>🔍 Analysis: Cause → Consequence Relationship</h3>
+                
+                <div class="visual-flow">
+                    <div class="flow-step">
+                        <span class="emoji">🌧️</span>
+                        <strong>CAUSE</strong><br>
+                        Heavy Rain
+                    </div>
+                    <div class="flow-step">
+                        <span class="emoji">🌊</span>
+                        <strong>IMMEDIATE EFFECT</strong><br>
+                        Flooded Roads
+                    </div>
+                    <div class="flow-step">
+                        <span class="emoji">🏫</span>
+                        <strong>CONSEQUENCE</strong><br>
+                        Schools Closed
+                    </div>
+                </div>
+                
+                <p><strong>Why "THEREFORE"?</strong> This shows logical consequence. The flooding naturally led to school closures as a safety measure. It's a result/conclusion drawn from the first statement.</p>
+                
+                <div style="background: #e8f5e8; padding: 15px; border-radius: 10px; margin-top: 20px;">
+                    <strong>🔄 Chain Reaction:</strong> Rain → Floods → Safety Concern → Schools Close
+                </div>
+            </div>
+            
+            <div class="memory-aid">
+                <h4>🧠 Memory Trick: "THEREFORE = THE RESULT"</h4>
+                <p><strong>T</strong>he <strong>H</strong>appening <strong>E</strong>nds in a <strong>R</strong>esult that <strong>E</strong>veryone can <strong>F</strong>oresee as the <strong>O</strong>utcome <strong>R</strong>easonably <strong>E</strong>xpected</p>
+                <p>Remember: <em>THEREFORE = What happens as a logical consequence</em></p>
+            </div>
+            
+            <div style="background: linear-gradient(135deg, #fff8e1, #ffecb3); padding: 20px; border-radius: 15px; margin: 20px 0;">
+                <h4 style="color: #f57f17; margin-bottom: 10px;">🎯 Quick Comparison:</h4>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                    <div>
+                        <strong>❌ "Because" would be wrong:</strong><br>
+                        Schools weren't closed BECAUSE roads were flooded (too direct)
+                    </div>
+                    <div>
+                        <strong>✅ "Therefore" is correct:</strong><br>
+                        Roads flooded, THEREFORE schools closed (logical consequence)
+                    </div>
+                </div>
+            </div>
+            
+            <div class="final-answer">
+                ✅ ANSWER: D) Therefore
+            </div>
+        </div>
+        
+        <!-- Summary Section -->
+        <div class="question-card" style="background: linear-gradient(135deg, #667eea, #764ba2); color: white;">
+            <h2 style="text-align: center; margin-bottom: 30px;">🎓 Key Learning Summary</h2>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+                <div style="background: rgba(255,255,255,0.1); padding: 20px; border-radius: 15px;">
+                    <h3>🔗 BECAUSE</h3>
+                    <p>Shows reason/cause</p>
+                    <p><em>Effect BECAUSE Cause</em></p>
+                </div>
+                
+                <div style="background: rgba(255,255,255,0.1); padding: 20px; border-radius: 15px;">
+                    <h3>🔗 THEREFORE</h3>
+                    <p>Shows consequence/result</p>
+                    <p><em>Cause; THEREFORE Effect</em></p>
+                </div>
+                
+                <div style="background: rgba(255,255,255,0.1); padding: 20px; border-radius: 15px;">
+                    <h3>🔗 BUT/YET</h3>
+                    <p>Shows contrast/opposition</p>
+                    <p><em>Expected BUT Unexpected</em></p>
+                </div>
+                
+                <div style="background: rgba(255,255,255,0.1); padding: 20px; border-radius: 15px;">
+                    <h3>🔗 WHILE/WHEREAS</h3>
+                    <p>Shows comparison/contrast</p>
+                    <p><em>This WHILE That</em></p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Add interactive effects
+        document.querySelectorAll('.connector-option').forEach(option => {
+            option.addEventListener('click', function() {
+                if (this.classList.contains('correct-answer')) {
+                    this.style.transform = 'scale(1.2)';
+                    setTimeout(() => {
+                        this.style.transform = 'scale(1)';
+                    }, 300);
+                }
+            });
+        });
+        
+        // Animate elements on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+        
+        document.querySelectorAll('.question-card').forEach(card => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(50px)';
+            card.style.transition = 'all 0.6s ease';
+            observer.observe(card);
+        });
+    </script>
+</body>
+</html>
